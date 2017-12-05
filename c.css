@@ -1,0 +1,123 @@
+
+
+/* CardFlipper generated class styles. */
+
+.card-container {
+	transform: perspective(1000px);
+	transform-style: preserve-3d;
+	height: 200px;
+	width: 200px;
+}
+.card-container.flip .card-flipper {
+	transform: rotateY(180deg);
+}
+.card-flipper {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.6s ease 0s;
+}
+.card-front, .card-back {
+	border: solid 5px rgb(235, 217, 237);
+	height: 190px;
+	width: 190px;
+	backface-visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.card-back {
+	background: url("bunnies/BunnyInside.png");
+	background-size:100% 100%;
+	z-index: 2;
+}
+.card-front {
+	border: solid 4px rgb(235, 217, 237);
+	transform: rotateY(180deg);
+}
+
+/* individual bunny character faces. */
+
+.face-aruraune {
+	background: url("bunnies/aruraune.png") white 0 0 / 100% 100%;
+}
+.face-ashuri {
+	background: url("bunnies/ashuri.png") white 0 0 / 100% 100%;
+}
+.face-chocolate {
+	background: url("bunnies/chocolate.png") white 0 0 / 100% 100%;
+}
+.face-cicini {
+	background: url("bunnies/cicini.png") white 0 0 / 100% 100%;
+}
+.face-cocoa {
+	background: url("bunnies/cocoa.png") white 0 0 / 100% 100%;
+}
+.face-erina {
+	background: url("bunnies/erina.png") white 0 0 / 100% 100%;
+}
+.face-illusionalius {
+	background: url("bunnies/illusionalius.png") white 0 0 / 100% 100%;
+}
+.face-illusionribbon {
+	background: url("bunnies/illusionribbon.png") white 0 0 / 100% 100%;
+}
+.face-irisu {
+	background: url("bunnies/irisu.png") white 0 0 / 100% 100%;
+}
+.face-kekebunny {
+	background: url("bunnies/kekebunny.png") white 0 0 / 100% 100%;
+}
+.face-kotriblue {
+	background: url("bunnies/kotriblue.png") white 0 0 / 100% 100%;
+}
+.face-kotripink {
+	background: url("bunnies/kotripink.png") white 0 0 / 100% 100%;
+}
+.face-kotri {
+	background: url("bunnies/kotri.png") white 0 0 / 100% 100%;
+}
+.face-lilith {
+	background: url("bunnies/lilith.png") white 0 0 / 100% 100%;
+}
+.face-miriam {
+	background: url("bunnies/miriam.png") white 0 0 / 100% 100%;
+}
+.face-miru {
+	background: url("bunnies/miru.png") white 0 0 / 100% 100%;
+}
+.face-nieve {
+	background: url("bunnies/nieve.png") white 0 0 / 100% 100%;
+}
+.face-nixie {
+	background: url("bunnies/nixie.png") white 0 0 / 100% 100%;
+}
+.face-noahfinal {
+	background: url("bunnies/noahfinal.png") white 0 0 / 100% 100%;
+}
+.face-noah {
+	background: url("bunnies/noah.png") white 0 0 / 100% 100%;
+}
+.face-pandora {
+	background: url("bunnies/pandora.png") white 0 0 / 100% 100%;
+}
+.face-ribbon {
+	background: url("bunnies/ribbon.png") white 0 0 / 100% 100%;
+}
+.face-rita {
+	background: url("bunnies/rita.png") white 0 0 / 100% 100%;
+}
+.face-rumi {
+	background: url("bunnies/rumi.png") white 0 0 / 100% 100%;
+}
+.face-saya {
+	background: url("bunnies/saya.png") white 0 0 / 100% 100%;
+}
+.face-seana {
+	background: url("bunnies/seana.png") white 0 0 / 100% 100%;
+}
+.face-syaro {
+	background: url("bunnies/syaro.png") white 0 0 / 100% 100%;
+}
+.face-vanilla {
+	background: url("bunnies/vanilla.png") white 0 0 / 100% 100%;
+}
