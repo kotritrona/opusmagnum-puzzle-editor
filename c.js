@@ -1,6 +1,6 @@
 // Opus Magnum puzzle editor script
-// Opus Magnum is a game made by Zachtronicx Industries.
-// ....
+// Opus Magnum is a game made by Zachtronics Industries.
+// game link: http://store.steampowered.com/app/558990/Opus_Magnum/
 'use strict';
 
 // common functions
