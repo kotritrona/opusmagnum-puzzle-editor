@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta charset="utf-8" />
+		<meta name="format-detection" content="telephone=no, email=no, address=no" />  
+		<title>ompuzzle</title>
+		<link rel="stylesheet" type="text/css" href="font/cormorant.css" />
+		<link rel="stylesheet" type="text/css" href="ds.css" />
+		<link rel="stylesheet" type="text/css" href="c.css" />
+		<script src="utf.js" type="text/javascript"></script>
+		<script src="jsbn.js" type="text/javascript"></script>
+		<script src="c.js" type="text/javascript"></script>
+		<script src="d3.v4.js" type="text/javascript"></script>
+		<script src="ui.js" type="text/javascript"></script>
+		<script src="s.js" type="text/javascript"></script>
+		<style>
+			* {
+				font-family: "cormorant" !important;
+			}
+			div {
+				color: #cccccc;
+				text-shadow: rgba(255, 255, 255, 0.3) 1px 1px;
+			}
+			#big-title {
+				font-size: 32px;
+				position: absolute;
+				top: 12px;
+				left: 0;
+				right: 0;
+				margin-left: auto;
+				margin-right: auto;
+				clear: both;
+				text-align: center;
+			}
+			#content-container {
+				position: absolute;
+				top: 60px;
+				left: 0;
+				right: 0;
+				margin-left: auto;
+				margin-right: auto;
+				clear: both;
+				width: 1250px;
+			}
+			#transmutation {
+				position: absolute;
+				top: 10px;
+				left: 265px;
+				width: 800px;
+				height: 600px;
+				overflow: scroll;
+			}
+			#meta {
+				font-size: 18px;
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				width: 260px;
+				height: 100px;
+			}
+			#meta input {
+				font-size: 14px;
+				color: #cccccc;
+			}
+			#savelink {
+				position: absolute;
+				top: 590px;
+				left: 10px;
+				width: 240px;
+				text-align: center;
+			}
+			#savelink a {
+				color: #d6ff99;
+			}
+			#toolbox-title {
+				font-size: 18px;
+				position: absolute;
+				top: 71px;
+				left: 10px;
+				width: 230px;
+				text-align: center;
+				height: 1.1em;
+			}
+			#toolbox {
+				position: absolute;
+				top: 95px;
+				left: 10px;
+				width: 230px;
+				height: 280px;
+				border: solid 2px #cccccc;
+			}
+			.toolbox-prime {
+				display: inline-block;
+				width: 50px;
+				height: 50px;
+				margin: 3px;
+			}
+			.toolbox-selected {
+				border-radius: 25px;
+				box-shadow: rgba(255, 255, 175, 0.6) 5px 5px;
+			}
+			#toolbox-bonds {
+				margin-left: 45px;
+			}
+			.toolbox-bond {
+				display: inline-block;
+				width: 30px;
+				height: 20px;
+				margin: 3px;
+			}
+			.toolbox-bond-selected {
+				box-shadow: rgba(255, 255, 175, 0.6) 4px 4px;
+			}
+			#molecules {
+				position: absolute;
+				top: 385px;
+				left: 10px;
+				width: 250px;
+				height: 200px;
+				
+			}
+			#reagent-title {
+				position: absolute;
+				width: 110px;
+				text-align: center;
+				font-size: 14px;
+				top: 0px;
+				left: 0px;
+			}
+			#output-title {
+				position: absolute;
+				width: 110px;
+				text-align: center;
+				font-size: 14px;
+				top: 0px;
+				left: 120px;
+			}
+			#reagents {
+				position: absolute;
+				top: 22px;
+				left: 0px;
+				width: 110px;
+				height: 150px;
+				border: solid 2px #cccccc;
+				overflow-y: scroll;
+			}
+			#outputs {
+				position: absolute;
+				top: 22px;
+				left: 120px;
+				width: 110px;
+				height: 150px;
+				border: solid 2px #cccccc;
+				overflow-y: scroll;
+			}
+			#reagent-add, #output-add {
+				position: absolute;
+				bottom: 0;
+				left: 5px;
+			}
+			#output-add {
+				position: absolute;
+				bottom: 0;
+				left: 125px;
+			}
+			.reagent-option, .output-option {
+				padding-left: 1px;
+				font-size: 14px;
+				font-weight: normal;
+			}
+			.reagent-select, .output-select {
+				
+			}
+			.reagent-remove, .output-remove {
+				margin-left: 0.5em;
+				color: #888888;
+				font-weight: normal;
+			}
+			.molecule-highlight {
+				background: #444;
+			}
+			#inst {
+				position: absolute;
+				top: 8px;
+				left: 1080px;
+				width: 170px;
+				height: 600px;
+			}
+			#inst-title {
+				font-size: 18px;
+				position: absolute;
+				top: 2px;
+				left: 0px;
+				width: 140px;
+				text-align: center;
+				height: 1.1em;
+			}
+			#inst-box {
+				position: absolute;
+				top: 30px;
+				left: 0px;
+				width: 140px;
+				height: 560px;
+				border: solid 2px #cccccc;
+				padding: 2px;
+			}
+			.inst-option {
+				position: relative;
+				display: inline-block;
+				width: 150px;
+				height: 25px;
+			}
+			.inst-checkbox {
+				position: absolute;
+				display: block;
+				width: 25px;
+				height: 25px;
+			}
+			.inst-label {
+				position: relative;
+				left: 28px;
+				top: 0px;
+				font-size: 14px;
+				line-height: 21px;
+				display: block;
+				width: 100px;
+				height: 25px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="big-title">Opus Magnum Puzzle Editor</div>
+		<div id="content-container">
+			<div id="savelink">
+				<a id="savefile">Save Puzzle File</a> | 
+				<a id="dl">DL</a>
+			</div>
+			<div id="meta">
+				Puzzle Name: <input type="text" value="" id="puzzle-name" /><br />
+				Steam ID: <input type="text" value="" id="steam-id" />
+			</div>
+			<div id="toolbox-title">TOOLBOX</div>
+			<div id="toolbox">
+				<div id="toolbox-primes"></div>
+				<div id="toolbox-bonds"></div>
+			</div>
+			<div id="molecules">
+				<div id="reagent-title">REAGENTS</div>
+				<div id="reagents">
+					
+				</div>
+				<a id="reagent-add">add</a>
+				<div id="output-title">OUTPUTS</div>
+				<div id="outputs">
+					
+				</div>
+				<a id="output-add">add</a>
+			</div>
+			<div id="transmutation">
+				<svg id="transmutation-svg"></svg>
+			</div>
+			<div id="inst">
+				<div id="inst-title">ITEMS</div>
+				<div id="inst-box"></div>
+			</div>
+		</div>
+		<script>
+			init();
+		</script>
+	</body>
+</html>
