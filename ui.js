@@ -406,4 +406,10 @@ function notRandom(str1, str2) {
 function makePuzzleFile() {
 	var num = notRandom(gPuzzleObj.steamID, gPuzzleObj.name);
 	saveFile(constructFile(gPuzzleObj), "c" + num + ".puzzle", "application/opus-magnum-puzzle");
+	// save steamID into localstorage, in case i want to share this with someone else
+	try {
+		localStorage.setItem("steamID-of-this-player", gPuzzleObj.steamID);
+	}
+	catch(c) {
+	}
 }
