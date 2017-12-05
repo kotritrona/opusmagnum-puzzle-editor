@@ -1,3 +1,4 @@
+// global variables
 var gPuzzleObj = {};
 var gMoleculeObj = {};
 var gBgMolecule = {};
@@ -6,6 +7,7 @@ var gSelectedPrimeType = "salt";
 var gSelectedBondType = {"n" : false, "r": false, "k": false, "y": false};
 
 function init() {
+	// a complete sample puzzle object in json format. could be newed in four lines but put here to help myself remember the format
 	gPuzzleObj = {
 		"name" : "PUDDING",
 		"steamID" : "76561198375746173",
@@ -79,21 +81,32 @@ function init() {
 			}]
 		}]
 	};
+	
+	// load steamID from localstorage, in case i want to share this with someone else
+	if(typeof localStorage == 'object' && typeof localStorage.getItem == 'function' && localStorage.getItem("steamID-of-this-player")) {
+		gPuzzleObj.steamID = localStorage.getItem("steamID-of-this-player");
+	}
+	
+	// the big thing to put all the primes on
 	gBgMolecule = generateBGMolecule(15);
 	
+	// metadata
 	$I("puzzle-name").value = gPuzzleObj.name;
 	$I("steam-id").value = gPuzzleObj.steamID;
 	
+	// create svg for background molecule, activate callback funcs
 	generateField(gBgMolecule);
 	generateMetaCallbacks();
 	generateToolbox();
 	
+	// d3.update everything bound to data
 	updateReagents();
 	updateOutputs();
 	updateInsts();
 	
 	updateMolecule(gPuzzleObj.outputs[0]);
 	
+	// default types of prime/bondtype
 	$Q(".toolbox-salt").click();
 	$Q(".toolbox-n").click();
 }
