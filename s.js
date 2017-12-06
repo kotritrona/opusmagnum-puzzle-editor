@@ -1,4 +1,3 @@
-// global variables
 var gPuzzleObj = {};
 var gMoleculeObj = {};
 var gBgMolecule = {};
@@ -7,7 +6,7 @@ var gSelectedPrimeType = "salt";
 var gSelectedBondType = {"n" : false, "r": false, "k": false, "y": false};
 
 function init() {
-	// a complete sample puzzle object in json format. could be newed in four lines but put here to help myself remember the format
+	// a complete sample puzzle object in json format.
 	gPuzzleObj = {
 		"name" : "PUDDING",
 		"steamID" : "76561198375746173",
@@ -19,20 +18,20 @@ function init() {
 			"bonding" : true,
 			"unbonding" : true,
 			"multibonding" : true,
-			"triplex" : true,
+			"triplex" : false,
 			"calcification" : true,
-			"duplication" : true,
-			"projection" : true,
-			"purification" : true,
-			"animismus" : true,
-			"disposal" : true,
-			"quintessence" : true,
+			"duplication" : false,
+			"projection" : false,
+			"purification" : false,
+			"animismus" : false,
+			"disposal" : false,
+			"quintessence" : false,
 			"grabturn" : true,
 			"drop" : true,
 			"turnback" : true,
 			"repeat" : true,
 			"pivot" : true,
-			"berlo" : true
+			"berlo" : false
 		},
 		"reagents" : [{
 			"primes" : [{
@@ -87,26 +86,22 @@ function init() {
 		gPuzzleObj.steamID = localStorage.getItem("steamID-of-this-player");
 	}
 	
-	// the big thing to put all the primes on
+	// initialization
 	gBgMolecule = generateBGMolecule(15);
 	
-	// metadata
 	$I("puzzle-name").value = gPuzzleObj.name;
 	$I("steam-id").value = gPuzzleObj.steamID;
 	
-	// create svg for background molecule, activate callback funcs
 	generateField(gBgMolecule);
 	generateMetaCallbacks();
 	generateToolbox();
 	
-	// d3.update everything bound to data
 	updateReagents();
 	updateOutputs();
 	updateInsts();
 	
 	updateMolecule(gPuzzleObj.outputs[0]);
 	
-	// default types of prime/bondtype
 	$Q(".toolbox-salt").click();
 	$Q(".toolbox-n").click();
 }
