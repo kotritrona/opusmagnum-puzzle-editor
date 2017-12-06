@@ -174,7 +174,7 @@ function generateToolbox() {
 		d3.select("#toolbox-primes").append("div")
 		.classed("toolbox-prime", true)
 		.classed("toolbox-" + prime, true)
-		.style("background", "url('img/" + prime + ".png')")
+		.style("background", "url('img/" + prime + ".png') 0 0 / 100% 100%")
 		.on("click", toolboxPrimeClick.bind(this, prime));
 	});
 	var bondTypes = ["n", "r", "k", "y"];
