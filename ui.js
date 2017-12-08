@@ -482,7 +482,6 @@ function inputFileLoad(d) {
 function loadFile(fp) {
 	var fr = new FileReader();
 	fr.onload = function(r) {
-		console.log("load complete", window.a = r.target.result);
 		try {
 			importPuzzleData(loadPuzzle([].slice.call(new Uint8Array(r.target.result))));
 		}
@@ -490,5 +489,4 @@ function loadFile(fp) {
 		}
 	};
 	fr.readAsArrayBuffer(fp);
-	console.log(fr);
 }
