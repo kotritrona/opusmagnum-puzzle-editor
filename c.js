@@ -46,6 +46,7 @@ function Prime(t, x, y) {
 	this.x = x;
 	this.y = y;
 }
+Prime.primeTypes = ["salt", "air", "earth", "fire", "water", "quicksilver", "gold", "silver", "copper", "iron", "tin", "lead", "vitae", "mors", "repeat", "quintessence"];
 
 // Bond constructor. usage: new Bond(string BondType, x1, y1, x2, y2)
 // BondType: normal, triplex, n, r, rk, ry, ky, rky
@@ -147,7 +148,7 @@ function instBinary(inst) {
 
 // convert Molecule objects to binary data. returns array
 function moleculeBinary(m) {
-	var primeTypes = ["salt", "air", "earth", "fire", "water", "quicksilver", "gold", "silver", "copper", "iron", "tin", "lead", "vitae", "mors", "repeat", "quintessence"]
+	var primeTypes = Prime.primeTypes;
 	var d = [];
 	// primes
 	d.push(m.primes.length & 255,
@@ -184,7 +185,7 @@ function constructFile(obj) {
 	d = d.concat(puzzleName.split("").map(function(_) { return _.charCodeAt(0); }));
 	
 	// steam ID little endian
-	d = d.concat(new BigInteger(obj.steamID, 10).toByteArray().map(function(_) { return _ < 0 ? 256 + _ : _}).reverse());
+	d = d.concat(new BigInteger(obj.steamID, 10).toByteArray().map(function(_) { return _ < 0 ? 256 + _ : _}).reverse().concat([0, 0, 0, 0, 0, 0, 0, 0]).slice(0, 8));
 	
 	// instructions/glyphs
 	d = d.concat(instBinary(obj.inst));
@@ -275,4 +276,102 @@ function generateGraphene() {
 	bonds = fullBond(primes);
 	
 	return new Molecule(primes, bonds);
+}
+
+// parse binary insts from 3 input array
+function instParse(ia) {
+	return {
+		"arm"            : !!(0x01 & ia[0]),
+		"multiarm"       : !!(0x02 & ia[0]),
+		"piston"         : !!(0x04 & ia[0]),
+		"track"          : !!(0x08 & ia[0]),
+		"bonding"        : !!(0x01 & ia[1]),
+		"unbonding"      : !!(0x02 & ia[1]),
+		"multibonding"   : !!(0x04 & ia[1]),
+		"triplex"        : !!(0x08 & ia[1]),
+		"calcification"  : !!(0x10 & ia[1]),
+		"duplication"    : !!(0x20 & ia[1]),
+		"projection"     : !!(0x40 & ia[1]),
+		"purification"   : !!(0x80 & ia[1]),
+		"animismus"      : !!(0x01 & ia[2]),
+		"disposal"       : !!(0x02 & ia[2]),
+		"quintessence"   : !!(0x04 & ia[2]),
+		"grabturn"       : !!(0x40 & ia[2]),
+		"drop"           : !!(0x80 & ia[2]),
+		"turnback"       : !!(0x01 & ia[3]),
+		"repeat"         : !!(0x02 & ia[3]),
+		"pivot"          : !!(0x04 & ia[3]),
+		"berlo"          : !!(0x10 & ia[3])
+	};
+}
+
+function moleculeParse(arr) {
+	var assert = function(_) { if(!_ ) throw "load failed"; };
+	var primeTypes = Prime.primeTypes;
+	var m = new Molecule();
+	
+	// read primes
+	var primeCount = new BigInteger(arr.splice(0, 4).reverse()).intValue();
+	assert(primeCount < 6666);
+	for(var i=0; i< primeCount; i++) {
+		var acut = arr.splice(0, 3).map(function(_) { return _ > 127 ? _ - 256 : _ });
+		assert(acut[0] > 0 && acut[0] <= primeTypes.length);
+		m.primes.push(new Prime(primeTypes[acut[0] - 1], acut[1], acut[2]));
+	}
+	
+	// read bonds
+	var bondCount = new BigInteger(arr.splice(0, 4).reverse()).intValue();
+	assert(bondCount < 6666);
+	for(var i=0; i< bondCount; i++) {
+		var bcut = arr.splice(0, 5).map(function(_) { return _ > 127 ? _ - 256 : _ });
+		m.bonds.push(new Bond({
+			"n" : !!(bcut[0] & 1),
+			"r" : !!(bcut[0] & 2),
+			"k" : !!(bcut[0] & 4),
+			"y" : !!(bcut[0] & 8)
+		}, bcut[1], bcut[2], bcut[3], bcut[4]));
+	}
+	
+	return m;
+}
+
+// load puzzle from array
+function loadPuzzle(arr) {
+	var puz = {};
+	
+	// assert RLs are in reasonable range to prevent dead loops
+	var assert = function(_) { if(!_) throw "load failed"; };
+	
+	// magic2
+	var m2 = arr.splice(0, 4);
+	assert(m2[0] == 2);
+	
+	// puzzle name
+	var nameLength = arr.shift();
+	assert(nameLength > 0);
+	puz.name = utf8to16(arr.splice(0, nameLength).map(function(_) { return String.fromCharCode(_); }).join(""));
+	
+	// steamID
+	puz.steamID = new BigInteger(arr.splice(0, 8).reverse()).toRadix(10);
+	
+	// inst bits
+	puz.inst = instParse(arr.splice(0, 8));
+	
+	// reagents
+	var reagentCount = arr.shift();
+	assert(arr.splice(0, 3).every(function(_) { return _ == 0; }));
+	puz.reagents = [];
+	for(var i=0; i< reagentCount; i++) {
+		puz.reagents.push(moleculeParse(arr));
+	}
+	
+	// outputs
+	var outputCount = arr.shift();
+	assert(arr.splice(0, 3).every(function(_) { return _ == 0; }));
+	puz.outputs = [];
+	for(var i=0; i< outputCount; i++) {
+		puz.outputs.push(moleculeParse(arr));
+	}
+	
+	return puz;
 }

@@ -132,6 +132,7 @@ function generateField(bg) {
 	.on("click", bbondClick);
 }
 
+// toolbox event callbacks.
 function toolboxPrimeClick(prime) {
 	d3.selectAll(".toolbox-prime").classed("toolbox-selected", false);
 	d3.select(".toolbox-" + prime).classed("toolbox-selected", true);
@@ -149,6 +150,7 @@ function toolboxBondClick(bond) {
 	}
 }
 
+// attaches callbacks to all page elements
 function generateMetaCallbacks() {
 	d3.select("#puzzle-name").on("keyup", function(d) {
 		gPuzzleObj.name = d3.select("#puzzle-name").property("value");
@@ -163,11 +165,15 @@ function generateMetaCallbacks() {
 		addOutput();
 	});
 	d3.select("#savefile").on("click", makePuzzleFile);
+	d3.select("#toolbox").on("dragover", eventNothing);
+	d3.select("#toolbox").on("drop", toolboxDrop);
+	d3.select("#loadfile").on("click", function(d) {
+		d3.select("#file-input").node().click();
+	});
+	d3.select("#file-input").on("change", inputFileLoad);
 }
 
-function generateInsts() {
-}
-
+// init function, fill the toolbox
 function generateToolbox() {
 	var primeTypes = ["salt", "air", "earth", "fire", "water", "quicksilver", "gold", "silver", "copper", "iron", "tin", "lead", "vitae", "mors", "repeat", "quintessence"]
 	primeTypes.forEach(function(prime) {
@@ -197,6 +203,7 @@ function addOutput() {
 	updateOutputs();
 }
 
+// highlight the current molecule being edited
 function updateHighlightedMolecule() {
 	var od1 = d3.select("#reagents").selectAll(".reagent-option").data(gPuzzleObj.reagents);
 	var od2 = d3.select("#outputs").selectAll(".output-option").data(gPuzzleObj.outputs);
@@ -215,6 +222,7 @@ function updateHighlightedMolecule() {
 	});
 }
 
+// update molecule lists
 function updateReagents() {
 	
 	var od = d3.select("#reagents").selectAll(".reagent-option").data(gPuzzleObj.reagents);
@@ -329,6 +337,7 @@ function updateMolecule(molecule) {
 	.on("click", bondClick);
 }
 
+// update inst list
 function updateInsts() {
 	var insts = gPuzzleObj.inst;
 	var instlist = Inst.instlist;
@@ -412,4 +421,74 @@ function makePuzzleFile() {
 	}
 	catch(c) {
 	}
+}
+
+// write puzzle data to global object, and refresh everything
+function importPuzzleData(puz) {
+	gPuzzleObj.name = puz.name || "";
+	gPuzzleObj.steamID = puz.steamID || 0;
+	gPuzzleObj.inst = puz.inst;
+	gPuzzleObj.reagents = puz.reagents;
+	gPuzzleObj.outputs = puz.outputs;
+	
+	// update metadata
+	d3.select("#puzzle-name").property("value", gPuzzleObj.name);
+	d3.select("#steam-id").property("value", gPuzzleObj.steamID);
+	
+	// updata lists
+	updateReagents();
+	updateOutputs();
+	updateInsts();
+	
+	// updata molecule
+	if(gPuzzleObj.outputs.length == 0) {
+		addOutput();
+	}
+	updateMolecule(gPuzzleObj.outputs[0]);
+}
+
+// toolbox drop handler
+function toolboxDrop(d) {
+	var evt = d3.event;
+	evt.stopPropagation();
+	evt.preventDefault();
+	
+	// find the file
+	try {
+		var file = d3.event.dataTransfer.files[0];
+	}
+	catch(c) {
+		return;
+	}
+	
+	// load the file
+	try {
+		loadFile(file);
+	}
+	catch(c) {
+	}
+}
+
+// input file load handler
+function inputFileLoad(d) {
+	try {
+		loadFile(d3.event.target.files[0]);
+	}
+	catch(c) {
+	}
+}
+
+// load file from file obj
+function loadFile(fp) {
+	var fr = new FileReader();
+	fr.onload = function(r) {
+		console.log("load complete", window.a = r.target.result);
+		try {
+			importPuzzleData(loadPuzzle([].slice.call(new Uint8Array(r.target.result))));
+		}
+		catch(c) {
+		}
+	};
+	fr.readAsArrayBuffer(fp);
+	console.log(fr);
 }

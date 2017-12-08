@@ -243,18 +243,22 @@
 			.disred {
 				color: rgba(255, 155, 155, 0.7);
 			}
+			#invisible-area {
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="big-title">Opus Magnum Puzzle Editor</div>
 		<div id="content-container">
 			<div id="savelink">
+				<a id="loadfile">Load</a> | 
 				<a id="savefile">Save Puzzle File</a> | 
 				<a id="dl">DL</a>
 			</div>
 			<div id="meta">
-				Puzzle Name: <input type="text" value="" id="puzzle-name" /><br />
-				Steam ID: <input type="text" value="" id="steam-id" />
+				<span id="puzzle-name-label">Puzzle Name: </span><input type="text" value="" id="puzzle-name" /><br />
+				<span id="steam-id-label">Steam ID: </span><input type="text" value="" id="steam-id" />
 			</div>
 			<div id="toolbox-title">TOOLBOX</div>
 			<div id="toolbox">
@@ -280,6 +284,9 @@
 				<div id="inst-title">ITEMS</div>
 				<div id="inst-box"></div>
 			</div>
+			<div id="invisible-area">
+				<input type="file" id="file-input" />
+			</div>
 		</div>
 		<div id="disclaimer">
 			<p>Important Notes:</p>
@@ -293,6 +300,9 @@
 				- Putting a repeat symbol somewhere the game didn't allow.<br />
 				- Having unbonded atoms outside of the top-right 60 degree sector.<br />
 				- Bonds unattached to any atom.
+			</p>
+			<p>
+				Drop puzzle file into toolbox to import.
 			</p>
 			<p>
 				Also, custom puzzle files are located in My Documents\My Games\Opus Magnum\[steam ID]\custom\.<br />
