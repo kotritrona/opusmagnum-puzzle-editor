@@ -248,8 +248,8 @@ function updateReagents() {
 	ro.append("a")
 	.classed("reagent-remove", true)
 	.html("(del)")
-	.on("click", function(d) {
-		gPuzzleObj.reagents.splice(gPuzzleObj.reagents.indexOf(d), 1);
+	.on("click", function(d, i) {
+		gPuzzleObj.reagents.splice(i, 1);
 		updateReagents();
 		updateMolecule(new Molecule());
 	});
@@ -279,8 +279,8 @@ function updateOutputs() {
 	ro.append("a")
 	.classed("output-remove", true)
 	.html("(del)")
-	.on("click", function(d) {
-		gPuzzleObj.outputs.splice(gPuzzleObj.outputs.indexOf(d), 1);
+	.on("click", function(d, i) {
+		gPuzzleObj.outputs.splice(i, 1);
 		updateOutputs();
 		updateMolecule(new Molecule());
 	});
