@@ -2,7 +2,8 @@
 // svg props
 var svgWidth = 2400;//d3.select("#transmutation").node().offsetWidth;
 var svgHeight = 2400;//d3.select("#transmutation").node().offsetHeight;
-var scale = d3.scaleLinear().domain([0,2400]).range([0, Math.min(svgHeight * 4/3, svgWidth)]).nice();
+var svgContentSize = 2400;
+var scale = d3.scaleLinear().domain([0,svgContentSize]).range([0, Math.min(svgHeight * 4/3, svgWidth)]).nice();
 
 // prime/bond image files
 function primeImg(d) {
@@ -23,18 +24,18 @@ function bondImg(d) {
 
 // prime/bond transformation functions
 var primeX = function(d) {
-	return scale(60 * d.x + 30 * d.y + 1200 - 20);
+	return scale(60 * d.x + 30 * d.y + svgContentSize/2 - 20);
 };
 var primeY = function(d) {
-  return scale(0.9 * 60 * -d.y + 1200 - 20);
+  return scale(0.9 * 60 * -d.y + svgContentSize/2 - 20);
 };
 var bondWidth = 27;
 var bondHeight = 18;
 var bondX = function(d) {
-	return scale(60 * (d.x1 + d.x2) / 2 + 30 * (d.y1 + d.y2) / 2 + 1200 - bondWidth/2);
+	return scale(60 * (d.x1 + d.x2) / 2 + 30 * (d.y1 + d.y2) / 2 + svgContentSize/2 - bondWidth/2);
 };
 var bondY = function(d) {
-	return scale(0.9 * 60 * -(d.y1 + d.y2) / 2 + 1200 - bondHeight/2 - 1);
+	return scale(0.9 * 60 * -(d.y1 + d.y2) / 2 + svgContentSize/2 - bondHeight/2 - 1);
 };
 var bondTransform = function(d) {
 	if(d.y2 == d.y1) {
@@ -489,4 +490,21 @@ function loadFile(fp) {
 		}
 	};
 	fr.readAsArrayBuffer(fp);
+}
+
+// resize function
+// contentSize in px, moleculeSize in molecule count
+function resizeField(contentSize, moleculeSize) {
+	// reset the constant and scale
+	svgContentSize = contentSize;
+	scale = d3.scaleLinear().domain([0,svgContentSize]).range([0, Math.min(svgHeight * 4/3, svgWidth)]).nice();
+	
+	// remove everything
+	var svg = d3.select("#transmutation-svg");
+	svg.selectAll("*").remove();
+	
+	// recreate everything
+	gBgMolecule = generateBGMolecule(moleculeSize);
+	generateField(gBgMolecule);
+	updateMolecule(gPuzzleObj.outputs[0] || new Molecule());
 }
