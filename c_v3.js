@@ -175,36 +175,101 @@ function moleculeBinary(m) {
 // according to steam guide http://steamcommunity.com/sharedfiles/filedetails/?id=1185668197
 function constructFile(obj) {
 	var d = [];
-	
-	// magic2
-	d.push(2, 0, 0, 0);
-	
+
+	// puzzle format version
+	d.push(3, 0, 0, 0);
+
 	// puzzle name
 	var puzzleName = utf16to8(obj.name);
 	d.push(puzzleName.length);
 	d = d.concat(puzzleName.split("").map(function(_) { return _.charCodeAt(0); }));
-	
+
 	// steam ID little endian
 	d = d.concat(new BigInteger(obj.steamID, 10).toByteArray().map(function(_) { return _ < 0 ? 256 + _ : _}).reverse().concat([0, 0, 0, 0, 0, 0, 0, 0]).slice(0, 8));
-	
+
 	// instructions/glyphs
 	d = d.concat(instBinary(obj.inst));
-	
+
 	// padding
 	d.push(0, 0, 0, 0);
-	
+
 	// reagents
 	d.push(obj.reagents.length, 0, 0, 0);
 	obj.reagents.forEach(function(_) {
 		d = d.concat(moleculeBinary(_));
 	});
-	
+
 	// outputs
 	d.push(obj.outputs.length, 0, 0, 0);
 	obj.outputs.forEach(function(_) {
 		d = d.concat(moleculeBinary(_));
 	});
-	
+
+	// target scale
+	d = d.concat(int32Binary(obj.outputTargetScale));
+
+	// production
+	if(obj.isProduction) {
+		d.push(1);
+		d = d.concat(constructProductionInfo(obj.productionInfo));
+	}
+	else {
+		d.push(0);
+	}
+
+	return d;
+}
+
+// puzzle v3.0 production info serialization
+function int32Binary(int32) {
+	return [int32 & 255, (int32 >> 8) & 255, (int32 >> 16) & 255, (int32 >> 24) & 255];
+
+}
+
+function stringBinary(str) {
+	return [str.length].concat(str.split("").map(function(_) { return _.charCodeAt(0); }));
+}
+
+function productionRegionBinary(region) {
+	return [region.x & 255, region.y & 255].concat(stringBinary(region.type));
+}
+
+function productionPipeBinary(pipe) {
+	var offsets = [pipe.offsets.length, 0, 0, 0];
+	pipe.offsets.forEach(function(_) {
+		offsets.push(_.x, _.y);
+	});
+	return [pipe.x1 & 255, pipe.y1 & 255, pipe.x2 & 255, pipe.y2 & 255].concat(offsets);
+}
+
+function productionVialBinary(vial) {
+	return [vial.x & 255, vial.y & 255, vial.isTop ? 1 : 0, vial.count, 0, 0, 0];
+}
+
+function constructProductionInfo(info) {
+	var d = [];
+
+	// shrinks, isolate
+	d.push(info.shrinkLeft ? 1 : 0, info.shrinkRight ? 1 : 0, info.isolateIO ? 1 : 0);
+
+	// regions
+	d.push(info.regions.length, 0, 0, 0);
+	info.regions.forEach(function(_) {
+		d = d.concat(productionRegionBinary(_));
+	});
+
+	// pipes
+	d.push(info.pipes.length, 0, 0, 0);
+	info.pipes.forEach(function(_) {
+		d = d.concat(productionPipeBinary(_));
+	});
+
+	// vials
+	d.push(info.vials.length, 0, 0, 0);
+	info.vials.forEach(function(_) {
+		d = d.concat(productionVialBinary(_));
+	});
+
 	return d;
 }
 
@@ -248,7 +313,7 @@ function generateBGMolecule(range) {
 	var primes = [];
 	// from vertical line 1 - 10
 	for(var y = -range; y < range; y++) {
-		// horizontal 
+		// horizontal
 		for(var x = -range - Math.ceil(y/2); x < range - Math.ceil(y/2); x++) {
 			primes.push(new Prime("salt", x, y));
 		}
@@ -264,7 +329,7 @@ function generateGraphene() {
 	var bonds = [];
 	// from vertical line 1 - 10
 	for(var y = 0; y < 9; y++) {
-		// horizontal 
+		// horizontal
 		for(var x = 0 - Math.ceil(y/2); x < 15 - Math.ceil(y/2); x++) {
 			if((y % 2 == 0 && (x + Math.ceil(y/2)) % 3 != 2)
 			|| (y % 2 == 1 && (x + Math.ceil(y/2)) % 3 != 1)) {
@@ -274,7 +339,7 @@ function generateGraphene() {
 	}
 	// make bonds
 	bonds = fullBond(primes);
-	
+
 	return new Molecule(primes, bonds);
 }
 
@@ -309,7 +374,7 @@ function moleculeParse(arr) {
 	var assert = function(_) { if(!_ ) throw "load failed"; };
 	var primeTypes = Prime.primeTypes;
 	var m = new Molecule();
-	
+
 	// read primes
 	var primeCount = new BigInteger(arr.splice(0, 4).reverse()).intValue();
 	assert(primeCount < 66666);
@@ -318,7 +383,7 @@ function moleculeParse(arr) {
 		assert(acut[0] > 0 && acut[0] <= primeTypes.length);
 		m.primes.push(new Prime(primeTypes[acut[0] - 1], acut[1], acut[2]));
 	}
-	
+
 	// read bonds
 	var bondCount = new BigInteger(arr.splice(0, 4).reverse()).intValue();
 	assert(bondCount < 66666);
@@ -331,32 +396,32 @@ function moleculeParse(arr) {
 			"y" : !!(bcut[0] & 8)
 		}, bcut[1], bcut[2], bcut[3], bcut[4]));
 	}
-	
+
 	return m;
 }
 
 // load puzzle from array
 function loadPuzzle(arr) {
 	var puz = {};
-	
+
 	// assert RLs are in reasonable range to prevent dead loops
 	var assert = function(_) { if(!_) throw "load failed"; };
-	
+
 	// magic2
 	var m2 = arr.splice(0, 4);
-	assert(m2[0] == 2);
-	
+	assert(m2[0] == 2 || m2[0] == 3);
+
 	// puzzle name
 	var nameLength = arr.shift();
 	assert(nameLength > 0);
 	puz.name = utf8to16(arr.splice(0, nameLength).map(function(_) { return String.fromCharCode(_); }).join(""));
-	
+
 	// steamID
 	puz.steamID = new BigInteger(arr.splice(0, 8).reverse()).toRadix(10);
-	
+
 	// inst bits
 	puz.inst = instParse(arr.splice(0, 8));
-	
+
 	// reagents
 	var reagentCount = arr.shift();
 	assert(arr.splice(0, 3).every(function(_) { return _ == 0; }));
@@ -364,7 +429,7 @@ function loadPuzzle(arr) {
 	for(var i=0; i< reagentCount; i++) {
 		puz.reagents.push(moleculeParse(arr));
 	}
-	
+
 	// outputs
 	var outputCount = arr.shift();
 	assert(arr.splice(0, 3).every(function(_) { return _ == 0; }));
@@ -372,6 +437,14 @@ function loadPuzzle(arr) {
 	for(var i=0; i< outputCount; i++) {
 		puz.outputs.push(moleculeParse(arr));
 	}
-	
+
 	return puz;
+}
+
+function duplicateMolecule(molecule) {
+	return new Molecule(molecule.primes.map(function(prime) {
+		return new Prime(prime.type, prime.x, prime.y);
+	}), molecule.bonds.map(function(bond) {
+		return new Bond(bond.type, bond.x1, bond.y1, bond.x2, bond.y2);
+	}));
 }

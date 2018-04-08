@@ -3,18 +3,20 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta charset="utf-8" />
-		<meta name="format-detection" content="telephone=no, email=no, address=no" />  
+		<meta name="format-detection" content="telephone=no, email=no, address=no" />
 		<title>ompuzzle</title>
 		<link rel="stylesheet" type="text/css" href="font/cormorant.css" />
 		<link rel="stylesheet" type="text/css" href="ds.css" />
 		<link rel="stylesheet" type="text/css" href="c.css" />
 		<script src="utf.js" type="text/javascript"></script>
 		<script src="jsbn.js" type="text/javascript"></script>
-		<script src="c.js" type="text/javascript"></script>
+		<script src="c_v3.js" type="text/javascript"></script>
 		<script src="d3.v4.js" type="text/javascript"></script>
-		<script src="ui.js" type="text/javascript"></script>
-		<script src="s.js" type="text/javascript"></script>
+		<script src="ui_v3.js" type="text/javascript"></script>
+		<script src="s_v3.js" type="text/javascript"></script>
 		<script src="ch.js" type="text/javascript"></script>
+		<script src="prod_classes.js" type="text/javascript"></script>
+		<script src="prod_ui.js" type="text/javascript"></script>
 		<style>
 			* {
 				font-family: "cormorant" !important;
@@ -66,7 +68,7 @@
 			}
 			#savelink {
 				position: absolute;
-				top: 575px;
+				top: 585px;
 				left: 10px;
 				width: 240px;
 				text-align: center;
@@ -100,7 +102,7 @@
 			}
 			.toolbox-selected {
 				border-radius: 25px;
-				box-shadow: rgba(255, 255, 175, 0.6) 4px 4px;
+				box-shadow: rgba(255, 255, 175, 0.6) 0 0 4px 4px;
 			}
 			#toolbox-bonds {
 				margin-left: 45px;
@@ -112,7 +114,7 @@
 				margin: 3px;
 			}
 			.toolbox-bond-selected {
-				box-shadow: rgba(255, 255, 175, 0.6) 4px 4px;
+				box-shadow: rgba(255, 255, 175, 0.6) 0 0 2px 2px;
 			}
 			#molecules {
 				position: absolute;
@@ -120,7 +122,7 @@
 				left: 10px;
 				width: 250px;
 				height: 200px;
-				
+
 			}
 			#reagent-title {
 				position: absolute;
@@ -161,10 +163,20 @@
 				bottom: 0;
 				left: 5px;
 			}
+			#reagent-dupe {
+				position: absolute;
+				bottom: 0;
+				left: 40px;
+			}
 			#output-add {
 				position: absolute;
 				bottom: 0;
 				left: 125px;
+			}
+			#output-dupe {
+				position: absolute;
+				bottom: 0;
+				left: 160px;
 			}
 			.reagent-option, .output-option {
 				padding-left: 1px;
@@ -172,7 +184,7 @@
 				font-weight: normal;
 			}
 			.reagent-select, .output-select {
-				
+
 			}
 			.reagent-remove, .output-remove {
 				margin-left: 0.5em;
@@ -229,6 +241,120 @@
 				width: 100px;
 				height: 25px;
 			}
+
+			/* Production START */
+			#production-area {
+				display: none;
+			}
+			#production-options {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+			}
+			.production-option {
+				position: relative;
+				display: block;
+				width: 150px;
+				height: 30px;
+			}
+			.production-checkbox {
+				position: absolute;
+				display: block;
+				width: 30px;
+				height: 30px;
+			}
+			.production-label {
+				position: relative;
+				left: 38px;
+				top: 0px;
+				font-size: 18px;
+				line-height: 26px;
+				display: block;
+				width: 180px;
+				height: 30px;
+			}
+			#production-toolbox {
+				position: absolute;
+				top: 140px;
+				left: 10px;
+				width: 230px;
+				height: 241px;
+				border: solid 2px #cccccc;
+			}
+			.production-toolbox-item {
+				display: inline-block;
+				width: 40px;
+				height: 40px;
+				background-size: 40px 40px;
+				margin: 3px;
+			}
+			.production-toolbox-selected {
+				box-shadow: rgba(255, 255, 175, 0.6) 0 0 4px 4px;
+			}
+			#production-pipes {
+				position: absolute;
+				top: 390px;
+				left: 10px;
+				width: 250px;
+				height: 155px;
+			}
+			#pipe-title {
+				position: absolute;
+				width: 110px;
+				text-align: center;
+				font-size: 14px;
+				top: 0px;
+				left: 0px;
+			}
+			#pipe-items {
+				position: absolute;
+				top: 22px;
+				left: 0px;
+				width: 110px;
+				height: 100px;
+				border: solid 2px #cccccc;
+				overflow-y: scroll;
+			}
+			#pipe-add {
+				position: absolute;
+				bottom: 0;
+				left: 5px;
+			}
+			.pipe-option {
+				padding-left: 1px;
+				font-size: 14px;
+				font-weight: normal;
+			}
+			.pipe-select {
+
+			}
+			.pipe-highlight {
+				background: #444;
+			}
+			.pipe-remove {
+				margin-left: 0.5em;
+				color: #888888;
+				font-weight: normal;
+			}
+
+			#tab-switch {
+				position: absolute;
+				top: 565px;
+				left: 10px;
+				width: 240px;
+				text-align: center;
+			}
+			#tab-switch a {
+				color: #888888;
+			}
+			#tab-switch a#tab-research.tab-selected {
+				color: #99ffd6;
+			}
+			#tab-switch a#tab-production.tab-selected {
+				color: #ff9999;
+			}
+			/* Production END */
+
 			#disclaimer {
 				position: absolute;
 				left: 0;
@@ -240,6 +366,16 @@
 				width: 800px;
 				font-size: 18px;
 			}
+
+			/* SVG */
+			#production-svg .pipe-i-prime,
+			#production-svg .pipe-i-bond,
+			#production-svg .pipe-o-prime,
+			#production-svg .pipe-o-bond,
+			#production-svg .pipe-bond {
+				pointer-events: none;
+			}
+			/* SVG End */
 			.disred {
 				color: rgba(255, 155, 155, 0.7);
 			}
@@ -251,44 +387,91 @@
 	<body>
 		<div id="big-title">Opus Magnum Puzzle Editor</div>
 		<div id="content-container">
+			<div id="tab-switch">
+				<a id="tab-research">Research</a> |
+				<a id="tab-production">Production</a>
+			</div>
 			<div id="savelink">
-				<a id="loadfile">Load</a> | 
-				<a id="savefile">Save Puzzle File</a> | 
+				<a id="loadfile">Load</a> |
+				<a id="savefile">Save Puzzle File</a> |
 				<a id="dl">DL</a>
 			</div>
-			<div id="meta">
-				<span id="puzzle-name-label">Puzzle Name: </span><input type="text" value="" id="puzzle-name" /><br />
-				<span id="steam-id-label">Steam ID: </span><input type="text" value="" id="steam-id" />
-			</div>
-			<div id="toolbox-title">TOOLBOX</div>
-			<div id="toolbox">
-				<div id="toolbox-primes"></div>
-				<div id="toolbox-bonds"></div>
-			</div>
-			<div id="molecules">
-				<div id="reagent-title">REAGENTS</div>
-				<div id="reagents">
-					
+			<div id="research-area-left">
+				<div id="meta">
+					<span id="puzzle-name-label">Puzzle Name: </span><input type="text" value="" id="puzzle-name" /><br />
+					<span id="steam-id-label">Steam ID: </span><input type="text" value="" id="steam-id" />
 				</div>
-				<a id="reagent-add">add</a>
-				<div id="output-title">OUTPUTS</div>
-				<div id="outputs">
-					
+				<div id="toolbox-title">TOOLBOX</div>
+				<div id="toolbox">
+					<div id="toolbox-primes"></div>
+					<div id="toolbox-bonds"></div>
 				</div>
-				<a id="output-add">add</a>
+				<div id="molecules">
+					<div id="reagent-title">REAGENTS</div>
+					<div id="reagents">
+
+					</div>
+					<a id="reagent-add">add</a>
+					<a id="reagent-dupe">dupe</a>
+					<div id="output-title">OUTPUTS</div>
+					<div id="outputs">
+
+					</div>
+					<a id="output-add">add</a>
+					<a id="output-dupe">dupe</a>
+				</div>
 			</div>
 			<div id="transmutation">
 				<svg id="transmutation-svg"></svg>
+				<svg id="production-svg"></svg>
 			</div>
-			<div id="inst">
-				<div id="inst-title">ITEMS</div>
-				<div id="inst-box"></div>
+			<div id="research-area-right">
+				<div id="inst">
+					<div id="inst-title">ITEMS</div>
+					<div id="inst-box"></div>
+				</div>
+			</div>
+			<div id="production-area">
+				<div id="production-options">
+					<div class="production-option">
+						<div class="production-checkbox" id="production-checkbox-on"></div><div class="production-label">Production Mode</div>
+					</div>
+					<div class="production-option">
+						<div class="production-checkbox" id="production-checkbox-shrink-left"></div><div class="production-label">Shrink Left</div>
+					</div>
+					<div class="production-option">
+						<div class="production-checkbox" id="production-checkbox-shrink-right"></div><div class="production-label">Shrink Right</div>
+					</div>
+					<div class="production-option">
+						<div class="production-checkbox" id="production-checkbox-isolate-io"></div><div class="production-label">Isolation</div>
+					</div>
+				</div>
+				<div id="production-toolbox">
+					<div id="production-toolbox-items"></div>
+					<div id="production-toolbox-pipes"></div>
+				</div>
+				<div id="production-pipes">
+					<div id="pipe-title">PIPES</div>
+					<div id="pipe-items">
+
+					</div>
+					<a id="pipe-add">add</a>
 			</div>
 			<div id="invisible-area">
 				<input type="file" id="file-input" />
 			</div>
 		</div>
 		<div id="disclaimer">
+			<p>Update 2018/4/8:</p>
+			<p>
+				Added Production mode.<br />
+				Click "Production" to switch to production tab, and check Production Mode to activate.<br />
+				If you encounter a bug, please tell me in steam or discord.
+			</p>
+			<p>
+				To do: support reading production puzzles; add outputTargetScale; debugging.
+			</p>
+			<hr />
 			<p>Important Notes:</p>
 			<p>
 				Do note that malformed puzzles created with this tool may <span class="disred">crash the game</span>.<br />

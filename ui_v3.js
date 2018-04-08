@@ -165,6 +165,12 @@ function generateMetaCallbacks() {
 	d3.select("#output-add").on("click", function(d) {
 		addOutput();
 	});
+	d3.select("#reagent-dupe").on("click", function(d) {
+		duplicateCurrentToReagent();
+	});
+	d3.select("#output-dupe").on("click", function(d) {
+		duplicateCurrentToOutput();
+	});
 	d3.select("#savefile").on("click", makePuzzleFile);
 	d3.select("#toolbox").on("dragover", eventNothing);
 	d3.select("#toolbox").on("drop", toolboxDrop);
@@ -507,4 +513,22 @@ function resizeField(contentSize, moleculeSize) {
 	gBgMolecule = generateBGMolecule(moleculeSize);
 	generateField(gBgMolecule);
 	updateMolecule(gPuzzleObj.outputs[0] || new Molecule());
+}
+
+function duplicateCurrentToReagent() {
+	if(!gMoleculeObj) {
+		return;
+	}
+	var molecule = duplicateMolecule(gMoleculeObj);
+	gPuzzleObj.reagents.push(molecule);
+	updateReagents();
+}
+
+function duplicateCurrentToOutput() {
+	if(!gMoleculeObj) {
+		return;
+	}
+	var molecule = duplicateMolecule(gMoleculeObj);
+	gPuzzleObj.outputs.push(molecule);
+	updateOutputs();
 }
