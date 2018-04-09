@@ -400,6 +400,51 @@ function moleculeParse(arr) {
 	return m;
 }
 
+function toSignedByte(n) {
+	return n > 127 ? n - 256 : n;
+}
+
+// parse 4 bytes array as int32
+function int32Parse(arr) {
+	return arr[0] + (arr[1] << 8) + (arr[2] << 16) + (arr[3] << 24);
+}
+
+// production parts
+function regionParse(arr) {
+	var x = toSignedByte(arr.shift());
+	var y = toSignedByte(arr.shift());
+	var strLength = arr.shift();
+	if(strLength > 0) {
+		var type = arr.splice(0, strLength).map(function(_) { return String.fromCharCode(_); }).join("");
+	}
+	else {
+		var type = "Small";
+	}
+	return new Region(x, y, type);
+}
+
+function pipeParse(arr) {
+	var assert = function(_) { if(!_) throw "load failed"; };
+
+	var cut = arr.splice(0, 4).map(toSignedByte);
+	var offsets = [];
+	var offsetCount = int32Parse(arr.splice(0, 4));
+	assert(offsetCount < 5000);
+	for(var i=0; i<	offsetCount; i++) {
+		var ocut = arr.splice(0, 2).map(toSignedByte);
+		offsets.push({"x": ocut[0], "y": ocut[1]});
+	}
+	return new Pipe(cut[0], cut[1], cut[2], cut[3], offsets);
+}
+
+function vialParse(arr) {
+	var x = toSignedByte(arr.shift());
+	var y = toSignedByte(arr.shift());
+	var isTop = !!arr.shift();
+	var vialCount = int32Parse(arr.splice(0, 4));
+	return new Vial(x, y, isTop, vialCount);
+}
+
 // load puzzle from array
 function loadPuzzle(arr) {
 	var puz = {};
@@ -407,9 +452,9 @@ function loadPuzzle(arr) {
 	// assert RLs are in reasonable range to prevent dead loops
 	var assert = function(_) { if(!_) throw "load failed"; };
 
-	// magic2
-	var m2 = arr.splice(0, 4);
-	assert(m2[0] == 2 || m2[0] == 3);
+	// file version
+	var version = arr.splice(0, 4);
+	assert(version[0] == 2 || version[0] == 3);
 
 	// puzzle name
 	var nameLength = arr.shift();
@@ -436,6 +481,53 @@ function loadPuzzle(arr) {
 	puz.outputs = [];
 	for(var i=0; i< outputCount; i++) {
 		puz.outputs.push(moleculeParse(arr));
+	}
+
+	// new format
+	if(version[0] == 3) {
+		// output scale
+		puz.outputTargetScale = int32Parse(arr.splice(0, 4));
+
+		// production flag
+		puz.isProduction = !!arr.shift();
+
+		if(puz.isProduction) {
+			var prod = new ProductionInfo();
+
+			// production flags
+			prod.shrinkLeft = !!arr.shift();
+			prod.shrinkRight = !!arr.shift();
+			prod.isolateIO = !!arr.shift();
+
+			// regions
+			var regionCount = int32Parse(arr.splice(0, 4));
+			assert(regionCount < 5000);
+			prod.regions = [];
+			for(var i=0; i< regionCount; i++) {
+				prod.regions.push(regionParse(arr));
+			}
+
+			// pipes
+			var pipeCount = int32Parse(arr.splice(0, 4));
+			assert(pipeCount < 5000);
+			prod.pipes = [];
+			for(var i=0; i< pipeCount; i++) {
+				prod.pipes.push(pipeParse(arr));
+			}
+
+			// vials
+			var vialCount = int32Parse(arr.splice(0, 4));
+			assert(vialCount < 5000);
+			prod.vials = [];
+			for(var i=0; i< vialCount; i++) {
+				prod.vials.push(vialParse(arr));
+			}
+
+			puz.productionInfo = prod;
+		}
+		else {
+			puz.productionInfo = new ProductionInfo();
+		}
 	}
 
 	return puz;

@@ -99,15 +99,11 @@ function init() {
 				"x" : 0,
 				"y" : 0,
 				"type" : "Large"
-			},{
-				"x" : 10,
-				"y" : 0,
-				"type" : "Large"
 			}],
 			"pipes" : [{
-				"x1": 0,
+				"x1": -1,
 				"y1": 0,
-				"x2": 10,
+				"x2": 1,
 				"y2": 0,
 				"offsets": [{
 					"x": 0,
@@ -131,8 +127,7 @@ function init() {
 	// initialization
 	gBgMolecule = generateBGMolecule(15);
 
-	$I("puzzle-name").value = gPuzzleObj.name;
-	$I("steam-id").value = gPuzzleObj.steamID;
+	updateTextInputs();
 
 	generateField(gBgMolecule);
 	generateMetaCallbacks();

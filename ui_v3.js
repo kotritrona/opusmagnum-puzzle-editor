@@ -171,6 +171,9 @@ function generateMetaCallbacks() {
 	d3.select("#output-dupe").on("click", function(d) {
 		duplicateCurrentToOutput();
 	});
+	d3.select("#output-multiplier-input").on("keyup", function(d) {
+		gPuzzleObj.outputTargetScale = parseInt(d3.select("#output-multiplier-input").property("value"), 10);
+	});
 	d3.select("#savefile").on("click", makePuzzleFile);
 	d3.select("#toolbox").on("dragover", eventNothing);
 	d3.select("#toolbox").on("drop", toolboxDrop);
@@ -388,6 +391,13 @@ function updateInsts() {
 	});
 }
 
+// text input fields
+function updateTextInputs() {
+	d3.select("#puzzle-name").property("value", gPuzzleObj.name);
+	d3.select("#steam-id").property("value", gPuzzleObj.steamID);
+	d3.select("#output-multiplier-input").property("value", gPuzzleObj.outputTargetScale);
+}
+
 // saves file to disk (needs to click the link)
 // args: unconverted uint8array, file name, mimetype (should be omitted)
 function saveFile(binary_data, fn, tp) {
@@ -432,22 +442,29 @@ function makePuzzleFile() {
 
 // write puzzle data to global object, and refresh everything
 function importPuzzleData(puz) {
+	// transfer props to global object
 	gPuzzleObj.name = puz.name || "";
 	gPuzzleObj.steamID = puz.steamID || 0;
-	gPuzzleObj.inst = puz.inst;
-	gPuzzleObj.reagents = puz.reagents;
-	gPuzzleObj.outputs = puz.outputs;
+	["inst", "reagents", "outputs", "outputTargetScale", "isProduction", "productionInfo"].forEach(function(prop) {
+		gPuzzleObj[prop] = puz[prop];
+	});
 
 	// update metadata
-	d3.select("#puzzle-name").property("value", gPuzzleObj.name);
-	d3.select("#steam-id").property("value", gPuzzleObj.steamID);
+	updateTextInputs();
 
 	// update lists
 	updateReagents();
 	updateOutputs();
 	updateInsts();
 
-	// updata molecule
+    // remove pipe selection
+    gSelectedPipe = null;
+
+	// update production info
+	updateProduction();
+    updateProductionBoard();
+
+	// update molecule
 	if(gPuzzleObj.outputs.length == 0) {
 		addOutput();
 	}

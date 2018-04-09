@@ -140,6 +140,14 @@
 				top: 0px;
 				left: 120px;
 			}
+			#output-multiplier-input {
+				border: none;
+				font-size: 14px;
+				width: 1em;
+				text-align: center;
+				line-height: 16px;
+				color: #cccccc;
+			}
 			#reagents {
 				position: absolute;
 				top: 22px;
@@ -413,7 +421,7 @@
 					</div>
 					<a id="reagent-add">add</a>
 					<a id="reagent-dupe">dupe</a>
-					<div id="output-title">OUTPUTS</div>
+					<div id="output-title">OUTPUTS [x<input type="text" value="" id="output-multiplier-input" />]</div>
 					<div id="outputs">
 
 					</div>
@@ -462,14 +470,11 @@
 			</div>
 		</div>
 		<div id="disclaimer">
-			<p>Update 2018/4/8:</p>
+			<p>Update 2018/4/8 - 4/9:</p>
 			<p>
 				Added Production mode.<br />
 				Click "Production" to switch to production tab, and check Production Mode to activate.<br />
 				If you encounter a bug, please tell me in steam or discord.
-			</p>
-			<p>
-				To do: support reading production puzzles; add outputTargetScale; debugging.
 			</p>
 			<hr />
 			<p>Important Notes:</p>

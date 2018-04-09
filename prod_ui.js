@@ -4,7 +4,7 @@
 var svgWidthProd = 2400;
 var svgHeightProd = 2400;
 var svgContentSizeProd = 3600;
-var scaleProd = d3.scaleLinear().domain([0,svgContentSizeProd]).range([0, Math.min(svgHeightProd * 4/3, svgWidthProd)]).nice();
+var scaleProd = d3.scaleLinear().domain([0,svgContentSizeProd]).range([0, Math.min(svgHeightProd * 4/3, svgWidthProd)]);
 
 var primeXProd = function(d) {
     return scaleProd(60 * d.x + 30 * d.y + svgContentSizeProd/2 - 20);
@@ -129,6 +129,7 @@ function initProduction() {
     }
 }
 
+// updates production info left bar
 function updateProduction() {
     var prodOn = gPuzzleObj.isProduction;
     var prod = gPuzzleObj.productionInfo;
