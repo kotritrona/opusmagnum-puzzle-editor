@@ -10,10 +10,10 @@ function sayChinese() {
 	d3.select("#toolbox-title").html("\u5de5\u5177\u7bb1");
 	d3.select("#reagent-title").html("\u539f\u6599");
 	d3.select("#output-title-label").html("\u4ea7\u54c1");
-	d3.select("#pipe-title").html("\u539f\u6599");
+	d3.select("#pipe-title").html("\u7ba1\u9053");
 	d3.select("#reagent-add").html("\u589e\u52a0");
 	d3.select("#output-add").html("\u589e\u52a0");
-	d3.select("#pipe-add").html("\u7ba1\u9053");
+	d3.select("#pipe-add").html("\u589e\u52a0");
 	d3.select("#inst-title").html("\u7269\u4ef6");
 	d3.select("#loadfile").html("\u8f7d\u5165");
 	d3.select("#savefile").html("\u4fdd\u5b58\u6587\u4ef6");
